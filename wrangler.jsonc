@@ -1,0 +1,25 @@
+{
+  // This is the existing, already-live Worker "nuvejodeu" (deployed 2026-08-11
+  // via the dashboard, holding the nuvejo.de custom domain). Its name and
+  // compatibility_date below are pinned to match exactly what's already
+  // deployed — this config must describe the live Worker as it exists today,
+  // not create a new one.
+  "name": "nuvejodeu",
+  "account_id": "aa4f0ebeb9e787e9525ed89038d40894",
+  "compatibility_date": "2026-08-11",
+  "main": "src/index.js",
+
+  "assets": {
+    "directory": "./",
+    "binding": "ASSETS",
+    // Matches the live config exactly (confirmed via the Cloudflare API
+    // before writing this file) so the site's existing pretty-URL redirects
+    // (/kontakt.html -> /kontakt) and plain 404 behavior don't change.
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "none",
+    // The one behavior change: only /api/* now reaches the Worker script
+    // below. Every other request is still served directly from the asset
+    // store, exactly as it was before this file existed.
+    "run_worker_first": ["/api/*"]
+  }
+}

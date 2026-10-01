@@ -1,0 +1,7 @@
+# Keep the Worker's own source and config out of the public asset bundle —
+# only the site's actual pages/images/css/js below should be servable.
+.assetsignore
+wrangler.jsonc
+src/
+.wrangler/
+node_modules/
