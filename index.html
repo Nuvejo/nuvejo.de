@@ -32,9 +32,8 @@
   "name": "Nuvejo",
   "description": "Individuelles Webdesign, Webentwicklung und laufende Website-Betreuung. Jede Website wird persönlich entworfen und gebaut.",
   "url": "https://nuvejo.de/",
-  "email": "hallo@nuvejo.de",
   "slogan": "Design. Growth. Trust.",
-  "areaServed": "DE",
+  "areaServed": ["DE"],
   "priceRange": "ab 499 €",
   "knowsLanguage": ["de", "en"],
   "makesOffer": [
@@ -44,6 +43,43 @@
     { "@type": "Offer", "name": "Website-Partnerschaft", "price": "99", "priceCurrency": "EUR" },
     { "@type": "Offer", "name": "Website-Partnerschaft Wachstum", "price": "299", "priceCurrency": "EUR" }
   ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Nuvejo",
+  "url": "https://nuvejo.de/",
+  "logo": "https://nuvejo.de/assets/img/nuvejo-mark.png",
+  "description": "Individuelles Webdesign und Webentwicklung. Keine Vorlagen, von Hand für deinen Betrieb gebaut.",
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Herford",
+    "addressCountry": "DE"
+  },
+  "areaServed": ["DE"]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  "name": "Nuvejo",
+  "image": "https://nuvejo.de/assets/img/nuvejo-mark.png",
+  "description": "Webdesign & Webentwicklung für Unternehmen in Deutschland",
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Herford",
+    "addressCountry": "DE"
+  },
+  "areaServed": ["DE"],
+  "url": "https://nuvejo.de/",
+  "contactPoint": {
+    "@type": "ContactPoint",
+    "contactType": "Customer Service",
+    "url": "https://nuvejo.de/kontakt"
+  }
 }
 </script>
 </head>
@@ -85,7 +121,7 @@
 <!-- ============ MASTHEAD ============ -->
 <header class="masthead">
   <div class="shell masthead__in">
-    <a class="brand" href="index.html" aria-label="Nuvejo — Startseite">
+    <a class="brand" href="/" aria-label="Nuvejo — Startseite">
       <span class="brand__mark"><img src="assets/img/nuvejo-mark.png" alt="Nuvejo" /></span>
       <span class="brand__type">
         <span class="brand__name">nuvejo</span>
@@ -98,13 +134,13 @@
     </button>
 
     <nav class="mainnav" id="mainnav" aria-label="Hauptnavigation">
-      <a href="index.html" aria-current="page">Start</a>
-      <a href="leistungen.html">Preise &amp; Leistungen</a>
-      <a href="seo-betreuung.html">SEO &amp; Betreuung</a>
-      <a href="arbeiten.html">Arbeiten</a>
-      <a href="ueber-mich.html">Über mich</a>
-      <a href="kontakt.html">Kontakt</a>
-      <a href="kontakt.html" class="btn btn--gold btn--sm">Projekt starten</a>
+      <a href="/" aria-current="page">Start</a>
+      <a href="/leistungen">Preise &amp; Leistungen</a>
+      <a href="/seo-betreuung">SEO &amp; Betreuung</a>
+      <a href="/arbeiten">Arbeiten</a>
+      <a href="/ueber-mich">Über mich</a>
+      <a href="/kontakt">Kontakt</a>
+      <a href="/kontakt" class="btn btn--gold btn--sm">Projekt starten</a>
     </nav>
   </div>
 </header>
@@ -134,11 +170,11 @@
         </p>
 
         <div class="btn-row rv">
-          <a href="kontakt.html" class="btn btn--gold">
+          <a href="/kontakt" class="btn btn--gold">
             Projekt starten
             <svg class="btn__ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
           </a>
-          <a href="arbeiten.html" class="btn btn--line">Meine Arbeiten ansehen</a>
+          <a href="/arbeiten" class="btn btn--line">Meine Arbeiten ansehen</a>
         </div>
 
         <dl class="hero__proof rv">
@@ -284,7 +320,7 @@
       </div>
 
       <div class="btn-row rv" style="margin-top: 2.5rem">
-        <a href="leistungen.html" class="tlink">
+        <a href="/leistungen" class="tlink">
           Alle Leistungen und Preise ansehen
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
         </a>
@@ -455,7 +491,7 @@
           </p>
         </div>
         <div class="btn-row">
-          <a href="kontakt.html" class="btn btn--gold">
+          <a href="/kontakt" class="btn btn--gold">
             Projekt starten
             <svg class="btn__ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
           </a>
@@ -472,7 +508,7 @@
   <div class="shell">
     <div class="footer__top">
       <div class="footer__brand">
-        <a class="brand" href="index.html" aria-label="Nuvejo — Startseite">
+        <a class="brand" href="/" aria-label="Nuvejo — Startseite">
           <span class="brand__mark"><img src="assets/img/nuvejo-mark.png" alt="Nuvejo" /></span>
           <span class="brand__type">
             <span class="brand__name">nuvejo</span>
@@ -490,12 +526,12 @@
       <div class="footer__col">
         <h4>Seiten</h4>
         <ul>
-          <li><a href="index.html">Start</a></li>
-          <li><a href="leistungen.html">Leistungen &amp; Preise</a></li>
-          <li><a href="seo-betreuung.html">SEO &amp; Betreuung</a></li>
-          <li><a href="arbeiten.html">Arbeiten</a></li>
-          <li><a href="ueber-mich.html">Über mich</a></li>
-          <li><a href="kontakt.html">Kontakt</a></li>
+          <li><a href="/">Start</a></li>
+          <li><a href="/leistungen">Leistungen &amp; Preise</a></li>
+          <li><a href="/seo-betreuung">SEO &amp; Betreuung</a></li>
+          <li><a href="/arbeiten">Arbeiten</a></li>
+          <li><a href="/ueber-mich">Über mich</a></li>
+          <li><a href="/kontakt">Kontakt</a></li>
         </ul>
       </div>
 
@@ -503,18 +539,21 @@
         <h4>Direkt</h4>
         <ul>
           <li><a href="mailto:hallo@nuvejo.de">hallo@nuvejo.de</a></li>
-          <li><a href="kontakt.html">Projekt starten</a></li>
-          <li><a href="impressum.html">Impressum</a></li>
-          <li><a href="datenschutz.html">Datenschutz</a></li>
+          <li><a href="/kontakt">Projekt starten</a></li>
+          <li><a href="/impressum">Impressum</a></li>
+          <li><a href="/datenschutz">Datenschutz</a></li>
         </ul>
       </div>
     </div>
 
     <div class="footer__bottom">
-      <p>© <span data-year>2026</span> Nuvejo. Alle Rechte vorbehalten.</p>
+      <p>
+        © <span data-year>2026</span> Nuvejo. Alle Rechte vorbehalten.<br />
+        Herford, Germany
+      </p>
       <nav class="footer__legal" aria-label="Rechtliches">
-        <a href="impressum.html">Impressum</a>
-        <a href="datenschutz.html">Datenschutz</a>
+        <a href="/impressum">Impressum</a>
+        <a href="/datenschutz">Datenschutz</a>
       </nav>
     </div>
 

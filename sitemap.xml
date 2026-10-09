@@ -2,42 +2,42 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://nuvejo.de/</loc>
-    <lastmod>2026-09-28</lastmod>
+    <lastmod>2026-10-09</lastmod>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://nuvejo.de/leistungen.html</loc>
-    <lastmod>2026-09-28</lastmod>
+    <loc>https://nuvejo.de/leistungen</loc>
+    <lastmod>2026-10-09</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://nuvejo.de/seo-betreuung.html</loc>
-    <lastmod>2026-09-28</lastmod>
+    <loc>https://nuvejo.de/seo-betreuung</loc>
+    <lastmod>2026-10-09</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://nuvejo.de/arbeiten.html</loc>
-    <lastmod>2026-09-28</lastmod>
+    <loc>https://nuvejo.de/arbeiten</loc>
+    <lastmod>2026-10-09</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://nuvejo.de/ueber-mich.html</loc>
-    <lastmod>2026-09-28</lastmod>
+    <loc>https://nuvejo.de/ueber-mich</loc>
+    <lastmod>2026-10-09</lastmod>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://nuvejo.de/kontakt.html</loc>
-    <lastmod>2026-09-28</lastmod>
+    <loc>https://nuvejo.de/kontakt</loc>
+    <lastmod>2026-10-09</lastmod>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://nuvejo.de/impressum.html</loc>
-    <lastmod>2026-09-28</lastmod>
+    <loc>https://nuvejo.de/impressum</loc>
+    <lastmod>2026-10-09</lastmod>
     <priority>0.3</priority>
   </url>
   <url>
-    <loc>https://nuvejo.de/datenschutz.html</loc>
-    <lastmod>2026-09-28</lastmod>
+    <loc>https://nuvejo.de/datenschutz</loc>
+    <lastmod>2026-10-09</lastmod>
     <priority>0.3</priority>
   </url>
 </urlset>
