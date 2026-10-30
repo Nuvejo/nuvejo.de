@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-<title>Über mich — Nuvejo</title>
+<title>Über mich | Webdesign | Nuvejo</title>
 <meta name="description" content="Hinter Nuvejo steckt eine Person: Marco. Vom Restaurantalltag zum Webdesign — warum ich alleine arbeite, direkt kommuniziere und jede Website selbst baue." />
 <meta name="robots" content="index, follow" />
 <meta name="theme-color" content="#0f1420" />
@@ -13,13 +13,14 @@
 <meta property="og:type" content="profile" />
 <meta property="og:locale" content="de_DE" />
 <meta property="og:site_name" content="Nuvejo" />
-<meta property="og:title" content="Über mich — Nuvejo" />
+<meta property="og:title" content="Über mich | Webdesign | Nuvejo" />
 <meta property="og:description" content="So hätte ich mir meinen eigenen Website-Anbieter gewünscht." />
 
 <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" onload="this.onload=null;this.rel='stylesheet'" />
+<noscript><link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" /></noscript>
 <link rel="stylesheet" href="assets/css/styles.css" />
 </head>
 
@@ -33,8 +34,8 @@
 
 <header class="masthead">
   <div class="shell masthead__in">
-    <a class="brand" href="/" aria-label="Nuvejo — Startseite">
-      <span class="brand__mark"><img src="assets/img/nuvejo-mark.png" alt="Nuvejo" /></span>
+    <a class="brand" href="/" aria-label="nuvejo Design.Growth.Trust. - Startseite">
+      <span class="brand__mark"><img src="assets/img/nuvejo-mark.webp" alt="Nuvejo" /></span>
       <span class="brand__type">
         <span class="brand__name">nuvejo</span>
         <span class="brand__tag">Design<i>.</i>Growth<i>.</i>Trust<i>.</i></span>
@@ -52,6 +53,40 @@
     </nav>
   </div>
 </header>
+<script>
+/* Menü-Drawer. Direkt nach dem Header gebunden, damit ein Tippen schon
+   funktioniert, bevor der Rest der Seite und assets/js/main.js geladen sind. */
+(function () {
+  var burger = document.querySelector('.burger');
+  var nav = document.getElementById('mainnav');
+  var veil = document.querySelector('.nav-veil');
+  if (!burger || !nav) return;
+  function setNav(open) {
+    burger.setAttribute('aria-expanded', String(open));
+    burger.setAttribute('aria-label', open ? 'Menü schließen' : 'Menü öffnen');
+    nav.classList.toggle('is-open', open);
+    if (veil) veil.classList.toggle('is-on', open);
+    document.body.classList.toggle('nav-locked', open);
+  }
+  burger.addEventListener('click', function () {
+    setNav(burger.getAttribute('aria-expanded') !== 'true');
+  });
+  if (veil) veil.addEventListener('click', function () { setNav(false); });
+  nav.addEventListener('click', function (e) {
+    if (e.target.closest('a')) setNav(false);
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && burger.getAttribute('aria-expanded') === 'true') {
+      setNav(false);
+      burger.focus();
+    }
+  });
+  // Drawer zurücksetzen, wenn das Fenster wieder Desktop-Breite hat (passt zum 1100px-Breakpoint im CSS).
+  window.addEventListener('resize', function () {
+    if (window.innerWidth > 1100) setNav(false);
+  });
+})();
+</script>
 
 <main id="main">
 
@@ -147,7 +182,8 @@
           <p>
             Ich weiß, wie es ist, wenn der Laden voll ist und trotzdem jemand
             eine Antwort will — jetzt, nicht in 48 Stunden. Deshalb bekommst du
-            bei mir keine Ticketnummer, sondern meine Handynummer.
+            bei mir keine Ticketnummer, sondern einen echten Menschen und eine
+            echte Antwort.
           </p>
         </div>
       </div>
@@ -158,8 +194,7 @@
           <p>
             Der Moment, in dem eine Website online geht, ist nicht das Ende der
             Arbeit — er ist der Anfang! Mit der Website-Partnerschaft bleibe
-            ich danach dran: erreichbar, unter derselben Nummer, mit demselben
-            Namen.
+            ich danach dran: erreichbar, mit demselben Namen.
           </p>
         </article>
       </div>
@@ -189,7 +224,7 @@
       </div>
 
       <div class="sign rv">
-        <span class="sign__mark"><img src="assets/img/nuvejo-mark.png" alt="" aria-hidden="true" /></span>
+        <span class="sign__mark"><img src="assets/img/nuvejo-mark.webp" alt="" aria-hidden="true" /></span>
         <span class="sign__txt">
           <b>Marco — Nuvejo</b>
           <span>Gegründet, weil es besser geht.</span>
@@ -205,7 +240,7 @@
         <div>
           <h2>Lass uns reden.</h2>
           <p>
-            10 Minuten, unverbindlich. Danach weißt du, ob ich der Richtige für
+            20 Minuten, unverbindlich. Danach weißt du, ob ich der Richtige für
             dich bin :)
           </p>
         </div>
@@ -226,8 +261,8 @@
   <div class="shell">
     <div class="footer__top">
       <div class="footer__brand">
-        <a class="brand" href="/" aria-label="Nuvejo — Startseite">
-          <span class="brand__mark"><img src="assets/img/nuvejo-mark.png" alt="Nuvejo" /></span>
+        <a class="brand" href="/" aria-label="nuvejo Design.Growth.Trust. - Startseite">
+          <span class="brand__mark"><img src="assets/img/nuvejo-mark.webp" alt="Nuvejo" /></span>
           <span class="brand__type">
             <span class="brand__name">nuvejo</span>
             <span class="brand__tag">Design<i>.</i>Growth<i>.</i>Trust<i>.</i></span>
@@ -241,7 +276,7 @@
         </p>
       </div>
       <div class="footer__col">
-        <h4>Seiten</h4>
+        <h4 aria-level="3">Seiten</h4>
         <ul>
           <li><a href="/">Start</a></li>
           <li><a href="/leistungen">Leistungen &amp; Preise</a></li>
@@ -252,7 +287,7 @@
         </ul>
       </div>
       <div class="footer__col">
-        <h4>Direkt</h4>
+        <h4 aria-level="3">Direkt</h4>
         <ul>
           <li><a href="/kontakt">Projekt starten</a></li>
           <li><a href="/impressum">Impressum</a></li>

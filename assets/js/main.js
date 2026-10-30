@@ -21,41 +21,8 @@
     window.addEventListener('scroll', onScroll, { passive: true });
   }
 
-  /* ------------------------------------------------------------------
-     Mobile navigation drawer
-     ------------------------------------------------------------------ */
-  var burger = $('.burger');
-  var nav    = $('.mainnav');
-  var veil   = $('.nav-veil');
-
-  function setNav(open) {
-    if (!burger || !nav) return;
-    burger.setAttribute('aria-expanded', String(open));
-    burger.setAttribute('aria-label', open ? 'Menü schließen' : 'Menü öffnen');
-    nav.classList.toggle('is-open', open);
-    if (veil) veil.classList.toggle('is-on', open);
-    document.body.classList.toggle('nav-locked', open);
-  }
-
-  if (burger && nav) {
-    burger.addEventListener('click', function () {
-      setNav(burger.getAttribute('aria-expanded') !== 'true');
-    });
-    if (veil) veil.addEventListener('click', function () { setNav(false); });
-    nav.addEventListener('click', function (e) {
-      if (e.target.closest('a')) setNav(false);
-    });
-    document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape' && burger.getAttribute('aria-expanded') === 'true') {
-        setNav(false);
-        burger.focus();
-      }
-    });
-    // Reset the drawer if the viewport grows back to desktop.
-    window.addEventListener('resize', function () {
-      if (window.innerWidth > 860) setNav(false);
-    });
-  }
+  /* The mobile menu drawer is bound by a small inline script right after the
+     header in each page, so it works before this file has loaded. */
 
   /* ------------------------------------------------------------------
      Scroll reveal — staggered per group
@@ -243,7 +210,7 @@
     // would light up the picked-package chip while leaving the select and
     // the emailed "Interesse" line blank.
     var q = new URLSearchParams(window.location.search).get('paket');
-    var allowed = ['Starter', 'Business', 'Premium'];
+    var allowed = ['Starter', 'Business', 'Premium', 'Website-Partnerschaft', 'Website-Partnerschaft Basis', 'Website-Partnerschaft Wachstum'];
     if (q && allowed.indexOf(q) !== -1) {
       showPicked(q);
       var sel = $('#interesse');
@@ -258,6 +225,28 @@
 
     var status   = $('#form-status');
     var formBody = $('#form-body');
+
+    // Cloudflare Turnstile: only active when #turnstile-box has a data-sitekey.
+    // With an empty key nothing is loaded and the form works as before.
+    var tsBox = $('#turnstile-box');
+    var tsToken = '';
+    if (tsBox && tsBox.getAttribute('data-sitekey')) {
+      window.onNuvejoTurnstile = function () {
+        window.turnstile.render(tsBox, {
+          sitekey: tsBox.getAttribute('data-sitekey'),
+          theme: 'dark',
+          callback: function (t) { tsToken = t; },
+          'expired-callback': function () { tsToken = ''; },
+          'error-callback': function () { tsToken = ''; }
+        });
+      };
+      var tsScript = document.createElement('script');
+      tsScript.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onNuvejoTurnstile&render=explicit';
+      tsScript.async = true;
+      document.head.appendChild(tsScript);
+    } else {
+      tsBox = null;
+    }
 
     function fail(field, msg) {
       var wrap = field.closest('.field');
@@ -288,6 +277,24 @@
     }
 
     var submitBtn = $('button[type="submit"]', form);
+
+    // Native constraint validation blocks the submit before the handler below
+    // ever runs, so the custom messages would only be reachable with the
+    // required attributes off. Worse for the consent checkbox: its real
+    // <input> is transparent (see .check input in styles.css), leaving the
+    // browser nothing to anchor its bubble to — the submit is refused and
+    // nothing at all appears. So take the invalid event instead (capture, as
+    // it doesn't bubble), suppress the native bubble, and light up the field's
+    // own .field__err, whose text already sits in the markup.
+    form.addEventListener('invalid', function (e) {
+      e.preventDefault();
+      fail(e.target);
+      if (status) {
+        status.hidden = false;
+        status.classList.remove('is-ok');
+        status.textContent = 'Bitte prüf noch kurz die markierten Felder.';
+      }
+    }, true);
 
     form.addEventListener('submit', function (e) {
       // Always ours now: on success we render the confirmation in place
@@ -331,8 +338,20 @@
         email: mail.value.trim(),
         message: msg.value.trim(),
         business: ($('#f-firma') ? $('#f-firma').value.trim() : ''),
-        interest: ($('#interesse') ? $('#interesse').value : '')
+        interest: ($('#interesse') ? $('#interesse').value : ''),
+        // Honeypot: hidden from people, so it stays empty unless a bot fills it in.
+        'bot-field': (form.elements['bot-field'] ? form.elements['bot-field'].value : '')
       };
+      if (tsBox && tsToken) payload['cf-turnstile-response'] = tsToken;
+      if (tsBox && !tsToken) {
+        if (status) {
+          status.hidden = false;
+          status.classList.remove('is-ok');
+          status.textContent = 'Bitte bestätige zuerst kurz die Sicherheitsprüfung.';
+        }
+        if (submitBtn) submitBtn.disabled = false;
+        return;
+      }
 
       fetch('/api/contact', {
         method: 'POST',
@@ -348,6 +367,8 @@
         }
       }).catch(function () {
         if (submitBtn) submitBtn.disabled = false;
+        // Turnstile tokens are single use, so ask for a fresh one.
+        if (tsBox && window.turnstile) { tsToken = ''; window.turnstile.reset(); }
         if (status) {
           status.hidden = false;
           status.classList.remove('is-ok');

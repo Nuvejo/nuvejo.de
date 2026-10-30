@@ -33,7 +33,7 @@
   /* Text */
   --paper:      #f4f1ea;
   --paper-2:    rgba(244, 241, 234, 0.70);
-  --paper-3:    rgba(244, 241, 234, 0.46);
+  --paper-3:    rgba(244, 241, 234, 0.56);
   --paper-4:    rgba(244, 241, 234, 0.26);
 
   /* Lines */
@@ -455,6 +455,8 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .mainnav a[aria-current="page"]::after { opacity: 0.85; transform: translateY(0) scaleX(1); }
 .mainnav a[aria-current="page"] { color: var(--paper); }
 .mainnav .btn { margin-left: 0.6rem; }
+/* .mainnav a (above) would otherwise override the button colour and leave pale text on the gold gradient */
+.mainnav .btn { color: var(--btn-fg); }
 
 .burger {
   display: none;
@@ -1440,15 +1442,15 @@ a.reach__item:hover { background: rgba(36,51,79,0.9); }
    would collide with the brand lockup (or wrap onto two lines). */
 @media (max-width: 1100px) {
   .burger { display: flex; }
+  /* Keep the burger/close button above the open drawer, which slides over it */
+  .burger { position: relative; z-index: 60; }
   .mainnav {
     position: fixed; inset: 0 0 0 auto;
     width: min(360px, 86vw);
     flex-direction: column; align-items: stretch; justify-content: flex-start;
     gap: 0;
     padding: 6.5rem 1.75rem 2.5rem;
-    background: rgba(11,15,24,0.97);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+    background: rgba(11,15,24,0.98);
     border-left: 1px solid var(--line);
     transform: translateX(100%);
     /* Hidden for real when closed: keeps the links out of the tab order and
@@ -1477,12 +1479,23 @@ a.reach__item:hover { background: rgba(36,51,79,0.9); }
   .nav-veil {
     position: fixed; inset: 0; z-index: 50;
     background: rgba(6,9,15,0.6);
-    backdrop-filter: blur(2px);
     opacity: 0; pointer-events: none;
     transition: opacity 0.4s var(--ease);
   }
   .nav-veil.is-on { opacity: 1; pointer-events: auto; }
-  body.nav-locked { overflow: hidden; }
+  body.nav-locked { overflow: clip; }
+  /* html carries overflow-x:hidden, so overflow:hidden on body made body its own scroll box and the sticky
+     header (with the close button) scrolled away while the drawer was open on a scrolled page. */
+  html:has(body.nav-locked) { overflow: hidden; }
+  /* A backdrop-filter on the sticky header makes it the containing block for
+     the fixed drawer inside it, so once the page was scrolled the drawer
+     shrank to the header's height and sat off screen. No blur here; a more
+     solid background instead. Desktop (no drawer) keeps the blur. */
+  .masthead.is-stuck {
+    background: rgba(11, 15, 24, 0.94);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
 }
 
 /* Layout breakpoints unrelated to the navigation. */
@@ -1511,6 +1524,7 @@ a.reach__item:hover { background: rgba(36,51,79,0.9); }
   .step { grid-template-columns: 40px minmax(0, 1fr); gap: 1rem; }
   .step__mark { width: 40px; height: 40px; font-size: 0.82rem; }
   .flow::before { left: 19px; }
+  .cmp-only { display: none; }
   .compare { display: none; }
   .compare-cards { display: grid; gap: 1rem; }
   .dev-desk { width: 100%; }
@@ -1557,3 +1571,12 @@ a.reach__item:hover { background: rgba(36,51,79,0.9); }
   .masthead, .footer, .aura, .grain, .stage { display: none; }
   body { background: #fff; color: #000; }
 }
+
+/* Pricing: 12-month plan line, footnotes, link in the contact card */
+.tier__plan { margin: 0 0 0.35rem; font-size: 0.83rem; line-height: 1.5; color: var(--paper-2); }
+.tier__plan strong { color: var(--gold-hi); font-weight: 600; }
+.fnotes { display: grid; gap: 0.6rem; margin-top: 1.4rem; max-width: 88ch; }
+.fnotes ul { display: grid; gap: 0.25rem; padding-left: 1.1rem; list-style: disc; }
+.fnotes .star { margin-right: 0.2rem; }
+.reach__v a { color: var(--sky-hi); text-decoration: underline; text-underline-offset: 3px; }
+.star--alt { font-size: 0.95em; vertical-align: baseline; margin-left: 0.2rem; }
