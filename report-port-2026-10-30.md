@@ -42,7 +42,7 @@ Alles Übertragbare ist portiert und lokal geprüft. **Kein Produktiv-Deploy**, 
 | `_headers` | Sicherheits-Header 1:1 (HSTS, CSP, X-Frame-Options, …). CSP gegen alle .de-Seiten geprüft: keine Fehler | c64a1b5 |
 | `404.html` | Deutsche 404-Seite (noindex) | c64a1b5 |
 | `sitemap.xml` | lastmod 2026-10-30 für die 6 geänderten Inhaltsseiten | — |
-| `.assetsignore` | Neu: Report, `wrangler.jsonc`, `src/` usw. werden nicht als öffentliche Dateien ausgeliefert (getestet: 404) | eigene Entscheidung |
+| `.assetsignore` | Bestehende Datei um `report-*.md` ergänzt, damit dieser Report nicht öffentlich unter nuvejo.de abrufbar ist (getestet: 404). Hinweis: Im ersten Commit hatte ich die Datei versehentlich überschrieben, ohne sie vorher anzusehen; im Folge-Commit ist der Originalinhalt wiederhergestellt, nur die Report-Zeile kommt dazu | eigene Entscheidung |
 
 ## Korrigiert statt kopiert (falsche Aussagen)
 
