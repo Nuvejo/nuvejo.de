@@ -92,6 +92,16 @@ Lokal mit `wrangler dev` (echter Worker inkl. `_headers`), Playwright mit lokale
 - Worker-API: Honeypot 200 ohne Versand, fehlende Felder/ungültige Mail/kein JSON/zu lang/falscher Typ → 400. Gültige Anfrage lokal ohne Brevo-Key → Brevo 401 → 502 an den Browser, Details nur im Log. **Es wurde keine Mail verschickt.**
 - Rechtsseiten: `git diff` zeigt nur Hüllen-Zeilen.
 
-## Deploy
+## Preview & Live
 
-Siehe Abschnitt „Preview & Live“ unten (wird nach dem Push ergänzt).
+- Branch `port-au-2026-10-30` gepusht (Commits `11ff9af`, `060b989`).
+- **Cloudflare Workers Builds für den Branch sind fehlgeschlagen** (Build-IDs `04ea1078-3689-4b5e-a88a-8119c3d843af` und `0ac47409-c12c-4f02-94cb-e38ed18dac6f`, der zweite nach 0 s). Die Logs konnte ich nicht lesen: Der Cloudflare-Connector ist hier nicht autorisiert, und das wrangler-Token hat keinen Zugriff auf die Builds-API. Derselbe Befehl lokal (`wrangler versions upload --dry-run`) läuft fehlerfrei, und `main`-Builds liefen am 9.10. erfolgreich. Vermutung, ungeprüft: Builds für Nicht-Produktiv-Branches sind im Dashboard nicht passend eingerichtet. Bitte im Dashboard unter den Build-IDs nachsehen; ich habe dort nichts geändert.
+- Ersatzweise habe ich die Preview direkt hochgeladen: `wrangler versions upload --preview-alias port-au-2026-10-30` → Version `66fa55e2-aa96-4b28-aa61-338a718c727e`. Das ist eine **Nicht-Produktiv-Version**, der Produktions-Traffic ist unverändert (geprüft: nuvejo.de zeigt weiter „Am häufigsten gewählt“).
+  - Preview: https://port-au-2026-10-30-nuvejodeu.ma-andriani92.workers.dev
+- Prüfungen auf der Preview: dieselben wie lokal, alle bestanden (0 px horizontales Scrollen, 0 kaputte Bilder/Links, 0 Konsolen-/CSP-Fehler, Menü ok, `_headers` aktiv, Repo-Dateien und Report liefern 404). Formular: Vorauswahl, Fehleranzeige und API-Validierung (Honeypot 200 ohne Versand, fehlende Felder/ungültige Mail 400). Eine gültige Anfrage habe ich auf der Preview **nicht** abgeschickt, weil dort der echte Brevo-Key aktiv ist und dabei eine Mail rausginge.
+- **Nicht nach `main` gemergt, kein Produktiv-Deploy**, wegen des offenen TODOs (12-Monats-Raten).
+
+## Nächster Schritt für dich
+
+1. Monatsraten für die .de festlegen oder sagen, dass die Ratenzahlung auf der .de entfällt.
+2. Danach: TODO-Stellen füllen bzw. entfernen, Branch nach `main` mergen, pushen. Die Git-Integration deployt `main` wie bisher.
