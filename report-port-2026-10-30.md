@@ -156,3 +156,42 @@ Lokal mit `wrangler dev` (echter Worker inkl. `_headers`), Playwright mit lokale
 
 1. Monatsraten für die .de festlegen oder sagen, dass die Ratenzahlung auf der .de entfällt.
 2. Danach: TODO-Stellen füllen bzw. entfernen, Branch nach `main` mergen, pushen. Die Git-Integration deployt `main` wie bisher.
+
+## Nachtrag 2026-11-03 (2): Demo-Modus
+
+nuvejo.de ist nur Demo/Vorbereitung, das Unternehmen ist in Deutschland noch nicht live. Umgesetzt auf dem Branch `port-au-2026-10-30`, nur Preview, kein Merge, kein Produktiv-Deploy.
+
+### Was geändert wurde
+
+| Bereich | Änderung |
+|---|---|
+| Banner | Schmaler Streifen ganz oben auf **allen 9 Seiten** (8 + 404): „Demo-Version, noch nicht live.“ (`.demo-bar`, Navy/Gold). Er scrollt mit weg, das Menü bleibt sticky; der Mobil-Drawer liegt unverändert darüber |
+| Hero (Startseite) | Hinweis-Box zwischen Eyebrow und Hauptüberschrift: „Hinweis: Dies ist eine Demo-Version. Das Unternehmen ist in Deutschland noch nicht live, es werden keine Anfragen bearbeitet.“ (`.demo-note`). Platz bewusst über der Überschrift: Darunter lag sie auf 1280×800 unter dem sichtbaren Bereich, jetzt ist sie auf 390 und 1280 px ohne Scrollen zu sehen |
+| Kontaktseite | Formular wird nicht mehr ausgeliefert. Stattdessen steht dort der Demo-Hinweis (mit „keine Daten werden erhoben“). Das Original-Formular liegt **unverändert** in `<template id="live-form">` in `kontakt.html` (inert: nicht sichtbar, nicht absendbar, `main.js` findet es nicht, keine Konsolenfehler) |
+| Worker | `const DEMO_MODE = true;` am Anfang von `src/index.js`. Solange `true`, antwortet `POST /api/contact` mit **410** und `{"error":"Demo-Version: …"}`, ohne den Body zu lesen und ohne Brevo anzusprechen. Der gesamte Versandcode ist unverändert |
+| Suchmaschinen | `<meta name="robots" content="noindex, nofollow">` auf allen 9 Seiten (vorher teils `index, follow` / `noindex, follow`); `robots.txt`: `Disallow: /` |
+| Sitemap | Bewusst **nicht** entfernt (Vorgabe), siehe Checkliste |
+
+Hinweis zu den Suchmaschinen: `Disallow: /` verhindert das Crawlen, dann kann Google das `noindex` auf den Seiten nicht mehr lesen. Für eine neue Seite ist das unkritisch. Sollte die .de bereits im Index stehen, kann der Eintrag als reine URL ohne Beschreibung noch eine Weile sichtbar bleiben. Dann hilft ein Antrag auf Entfernung in der Google Search Console.
+
+### Reaktivieren: Start-Checkliste (alles zurückdrehen)
+
+1. **Worker:** `src/index.js`, `const DEMO_MODE = true;` → `false`.
+2. **Kontaktformular:** in `kontakt.html` den Block `<div class="form form--demo" id="demo-form-notice">…</div>` löschen und die beiden Zeilen `<template id="live-form">` und `</template>` entfernen (Inhalt dazwischen, das Formular, bleibt stehen).
+3. **Banner und Hero-Hinweis:** `<div class="demo-bar" …>` (direkt nach `<body>`) auf allen 9 Seiten und `<p class="demo-note …>` in `index.html` entfernen. Die CSS-Regeln `.demo-bar` / `.demo-note` am Ende von `assets/css/styles.css` können danach weg.
+4. **noindex:** in allen 9 Seiten `noindex, nofollow` zurück auf `index, follow` (Impressum, Datenschutz und 404 vorher: `noindex, follow` bzw. `noindex`, das war der Stand vor dem Demo-Modus; 404 bleibt sinnvollerweise `noindex`).
+5. **robots.txt:** `Disallow: /` → `Allow: /` (Sitemap-Zeile bleibt).
+6. **Sitemap:** `sitemap.xml` prüfen (URLs, `lastmod`), dann bei Google Search Console einreichen.
+7. **Datenschutz/Impressum:** Platzhalter füllen und Abschnitte 4 (Hosting) und 6 (Kontaktformular/Brevo) korrigieren, siehe Nachtrag oben. **Vor dem Reaktivieren des Formulars zwingend**, weil sonst personenbezogene Daten verarbeitet werden, die die Erklärung nicht nennt.
+8. Mit Test-Anfrage prüfen, dass die Mail ankommt (Brevo-Key und Absender sind am Worker unverändert).
+
+### Prüfungen
+
+Lokal (`wrangler dev`) und auf der Preview, jeweils 390×844 und 1280×800:
+
+- Banner auf allen 9 Seiten sichtbar, kein horizontales Scrollen, keine kaputten Bilder/Links, Menü öffnet sich auf 390 px vollständig und wird vom Banner nicht verdeckt.
+- Hero-Hinweis vollständig im ersten Bildschirm; lesbar (Gold/Grau auf dunklem Navy).
+- Kontaktseite: 0 `<form>`, 0 Eingabefelder, Demo-Hinweis sichtbar, 0 POST-Requests, keine Konsolenfehler.
+- API: gültige Anfrage, Honeypot-Anfrage und Müll-Body antworten alle mit **410**; es wird nichts an Brevo gesendet (auf der Preview mit echtem Key getestet, weil 410 vor jedem Brevo-Aufruf greift).
+- `robots.txt` liefert `Disallow: /`; alle 9 Seiten tragen `noindex, nofollow`.
+- Build: `wrangler versions upload` fehlerfrei.

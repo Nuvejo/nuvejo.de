@@ -1580,3 +1580,24 @@ a.reach__item:hover { background: rgba(36,51,79,0.9); }
 .fnotes .star { margin-right: 0.2rem; }
 .reach__v a { color: var(--sky-hi); text-decoration: underline; text-underline-offset: 3px; }
 .star--alt { font-size: 0.95em; vertical-align: baseline; margin-left: 0.2rem; }
+
+/* Demo-Version: schmales Banner ganz oben (scrollt weg, das Menue bleibt sticky) und Hinweis im Hero */
+.demo-bar {
+  background: var(--navy);
+  border-bottom: 1px solid rgba(212, 160, 84, 0.35);
+  color: var(--gold-hi);
+  text-align: center;
+  font-family: var(--display);
+  font-size: 0.8rem; letter-spacing: 0.02em; line-height: 1.4;
+  padding: 0.45rem 1rem;
+}
+.demo-bar strong { font-weight: 600; }
+.demo-note {
+  max-width: 46ch;
+  margin: 0 0 1.6rem;
+  padding: 0.85rem 1.1rem;
+  border-left: 3px solid var(--gold);
+  background: rgba(212, 160, 84, 0.09);
+  font-size: 0.92rem; line-height: 1.55; color: var(--paper-2);
+}
+.demo-note strong { color: var(--gold-hi); font-weight: 600; }
