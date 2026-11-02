@@ -12,11 +12,12 @@
   "assets": {
     "directory": "./",
     "binding": "ASSETS",
-    // Matches the live config exactly (confirmed via the Cloudflare API
+    // html_handling matches the live config (confirmed via the Cloudflare API
     // before writing this file) so the site's existing pretty-URL redirects
-    // (/kontakt.html -> /kontakt) and plain 404 behavior don't change.
+    // (/kontakt.html -> /kontakt) don't change. Unknown URLs get /404.html
+    // with a 404 status (changed from "none" on 2026-11-03, Marco's request).
     "html_handling": "auto-trailing-slash",
-    "not_found_handling": "none",
+    "not_found_handling": "404-page",
     // The one behavior change: only /api/* now reaches the Worker script
     // below. Every other request is still served directly from the asset
     // store, exactly as it was before this file existed.

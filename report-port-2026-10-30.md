@@ -65,7 +65,7 @@ Alles Übertragbare ist portiert und lokal geprüft. **Kein Produktiv-Deploy**, 
 | Turnstile-Keys, Brevo-Key, Formular-Empfänger | Vorgabe; der .de-Worker sendet weiter an seine bisherige Adresse |
 | Domain-Links auf .com.au | Vorgabe (die bestehenden Demo-Links zu blushwine/blackmarket.nuvejo.com.au auf „Arbeiten“ waren schon da und sind unverändert) |
 | „Gratis erster Monat“ entfernen | Gab es auf der .de nicht; die „2 Wochen kostenlose Kleinigkeiten“ im FAQ wurden aber wie auf AU entfernt |
-| 404 aktiv schalten | `wrangler.jsonc` hat `not_found_handling: "none"`. Damit `/404.html` bei unbekannten URLs ausgeliefert wird, müsste das auf `"404-page"` – das ist eine Änderung der Worker-Konfiguration (Cloudflare-Einstellung), daher nicht gemacht. Die Datei liegt bereit; eine Zeile in `wrangler.jsonc` aktiviert sie |
+| 404 aktiv schalten | Zunächst nicht gemacht (Worker-Konfiguration). **Nachtrag 2026-11-03: auf deinen Wunsch umgesetzt**, siehe unten |
 
 ## TODO (blockiert den Produktiv-Deploy)
 
@@ -74,10 +74,61 @@ Alles Übertragbare ist portiert und lokal geprüft. **Kein Produktiv-Deploy**, 
 
 ## Weitere offene Punkte (nicht blockierend)
 
-- Basis-Plan sagt weiter „Hosting auf Servern in Deutschland bzw. der EU“. Die .de selbst läuft auf Cloudflare (weltweite Edge). Bitte prüfen, ob das für Kundenseiten stimmt (unverändert gelassen).
-- 404-Seite aktivieren (siehe oben, eine Zeile in `wrangler.jsonc`).
-- Turnstile: Site-Key in `kontakt.html` (`data-sitekey`) + Secret `TURNSTILE_SECRET` am Worker, falls gewünscht.
+- ~~Hosting-Standort-Aussage im Basis-Plan~~ → erledigt am 2026-11-03, siehe Nachtrag.
+- ~~404-Seite aktivieren~~ → erledigt am 2026-11-03, siehe Nachtrag.
+- Turnstile: Site-Key in `kontakt.html` (`data-sitekey`) + Secret `TURNSTILE_SECRET` am Worker, falls gewünscht. **Vorher Datenschutzerklärung ergänzen**, siehe Nachtrag, Punkt 3.
 - Impressum/Datenschutz haben keinen Canonical (schon früher gemeldet, unverändert).
+
+## Nachtrag 2026-11-03
+
+Auf deine Anweisung, weiter auf dem Branch `port-au-2026-10-30`. Kein Merge, kein Produktiv-Deploy.
+
+### 1. 404-Seite aktiv
+
+- `wrangler.jsonc`: `not_found_handling` von `"none"` auf `"404-page"`, Kommentar angepasst. `html_handling` und `run_worker_first` unverändert.
+- Lokal mit `wrangler dev` geprüft:
+  - `/gibtsnicht`, `/angebote`, `/foo/bar/baz`, `/assets/img/fehlt.png` → Status **404** mit der deutschen 404-Seite. Auch bei verschachtelten Pfaden lädt sie mit Styles, Logo und Menü (absolute Pfade), ohne horizontales Scrollen bei 390 und 1280 px.
+  - Alle 8 Seiten → 200. `/leistungen.html` → 307 auf `/leistungen` (Clean URLs unverändert).
+  - `src/index.js`, `wrangler.jsonc` und der Report → weiter 404, nicht öffentlich.
+  - `_headers` (CSP usw.) gilt auch für die 404-Antwort.
+  - `/api/contact` antwortet weiter wie vorher (Validierung 400). Unbekannte `/api/*`-Pfade laufen über den Asset-Fallback und bekommen jetzt ebenfalls die 404-Seite mit Status 404.
+  - `/404` selbst liefert die Seite mit Status 200. Das ist das normale Verhalten von Cloudflare; die Seite ist `noindex` und steht nicht in der Sitemap.
+- Build: `wrangler versions upload --dry-run` läuft fehlerfrei. Die Cloudflare-Branch-Builds habe ich nicht erneut untersucht; der Push dieses Commits löst wieder einen Branch-Build aus.
+
+### 2. Hosting-Aussage
+
+- `leistungen.html`, Basis-Plan: „Hosting auf Servern in Deutschland bzw. der EU“ → „Schnelles, sicheres Hosting“. Keine Aussage mehr zum Serverstandort.
+- Per `grep` über alle `.html`, `.xml`, `.js`, `.json(c)` geprüft (Suchbegriffe u. a. „Deutschland bzw“, „der EU“, „Server(n) in“, „Serverstandort“, „Rechenzentr“). Das war die einzige Stelle; Meta-Tags, JSON-LD und Sitemap enthalten keine Standortangabe. Im Report stand die alte Formulierung nur als Zitat unter „offene Punkte“, dort jetzt als erledigt markiert.
+
+### 3. Muss Turnstile in Impressum/Datenschutz erwähnt werden?
+
+Kurzantwort:
+- **Impressum: nein.** Das Impressum nach § 5 DDG dient der Anbieterkennzeichnung (wer betreibt die Seite), nicht der Aufzählung eingesetzter Dienste.
+- **Datenschutzerklärung: aktuell nein, sobald Turnstile aktiviert wird: ja.**
+
+Begründung:
+- **Ist-Zustand:** In `kontakt.html` ist `data-sitekey=""` leer. Dann lädt `main.js` kein Turnstile-Script und es geht keine Anfrage an Cloudflare Challenges (im Playwright-Test geprüft: „turnstile loaded = false“). Es werden keine Daten über Turnstile verarbeitet, also gibt es auch nichts zu informieren.
+- **Nach Aktivierung:** Turnstile verarbeitet laut Cloudflare „Signals“ wie Client-IP-Adresse, TLS-Fingerprint, User-Agent und Sitekey/Origin ([Turnstile Privacy Addendum](https://www.cloudflare.com/turnstile-privacy-policy/), Stand 18.06.2025).
+  - Die IP-Adresse ist ein personenbezogenes Datum, die Informationspflicht nach Art. 13 DSGVO greift also.
+  - Cloudflare ist dabei für die Bot-Erkennung Auftragsverarbeiter (der Website-Betreiber ist Verantwortlicher). Für die Verbesserung der Bot-Erkennung ist Cloudflare selbst Verantwortlicher ([Turnstile Privacy Addendum](https://www.cloudflare.com/turnstile-privacy-policy/)).
+  - Cloudflare ist ein US-Anbieter. Laut Cloudflare stützt sich der Transfer auf die Zertifizierung nach dem EU-US Data Privacy Framework ([Cloudflare GDPR](https://www.cloudflare.com/de-de/gdpr/introduction/)). Den Eintrag in der offiziellen DPF-Liste konnte ich technisch nicht abrufen, bitte dort selbst prüfen: [dataprivacyframework.gov/list](https://www.dataprivacyframework.gov/list).
+- **Was die Datenschutzerklärung dann nennen sollte** (so auch der Generator-Baustein von [eRecht24 zu Cloudflare Turnstile](https://www.e-recht24.de/dsg/13110-cloudflare-turnstile.html), Stand 10.02.2023, der dort Art. 6 Abs. 1 lit. f DSGVO verwendet):
+  - Anbieter, Zweck (Spam-/Bot-Schutz des Kontaktformulars) und verarbeitete Daten
+  - Rechtsgrundlage, Drittlandtransfer und Widerspruchsrecht
+- **Cookies / § 25 TDDDG (nicht abschließend klärbar):**
+  - Standardmäßig gibt Turnstile laut Cloudflare nur ein einmaliges Token aus. Das Cookie `cf_clearance` kommt nur bei aktivierter „Pre-Clearance“ dazu, und die ist standardmäßig aus ([Cloudflare Docs: Clearance](https://developers.cloudflare.com/cloudflare-challenges/concepts/clearance/)).
+  - Turnstile liest aber per JavaScript Browser- und Geräteeigenschaften aus. Das kann ein „Zugriff auf Informationen in der Endeinrichtung“ nach [§ 25 Abs. 1 TDDDG](https://www.gesetze-im-internet.de/ttdsg/__25.html) sein (grundsätzlich einwilligungspflichtig), außer es ist nach Abs. 2 Nr. 2 „unbedingt erforderlich“.
+  - Die Datenschutzkonferenz rechnet „Systeme zur nutzerorientierten Betrugsprävention und IT-Sicherheit“ grundsätzlich dem Basisdienst zu ([DSK, OH Digitale Dienste v1.2, Nov. 2024](https://datenschutzkonferenz-online.de/media/oh/OH_Digitale_Dienste.pdf), Rn. 74). Sie warnt aber, dass eine pauschale Einordnung als Sicherheitsmaßnahme nicht reicht und die Voraussetzungen im Einzelfall vorliegen müssen (Rn. 83).
+  - Eine ausdrückliche Aussage der Aufsichtsbehörden zu CAPTCHA/Turnstile habe ich nicht gefunden. Ob Turnstile ohne Einwilligung eingesetzt werden darf, ist damit **nicht sicher geklärt**. Vor der Aktivierung von einem Anwalt oder einem gepflegten Datenschutz-Generator bestätigen lassen.
+
+### 4. Beim Prüfen gefunden: Die Datenschutzerklärung stimmt schon heute nicht mit der Website überein
+
+Ich habe nichts daran geändert (Vorgabe). Das ist aber dringender als Turnstile:
+
+- **Abschnitt 6, Kontaktformular:** Dort steht, das Formular sei „derzeit nicht an einen Versanddienst angebunden“ und die Eingaben würden nur lokal zu einer E-Mail zusammengestellt. Tatsächlich sendet das Formular (auch jetzt live auf nuvejo.de) per `POST /api/contact` an den Cloudflare Worker, der die Anfrage über **Brevo** per E-Mail weiterleitet. Brevo und der Worker werden nicht genannt.
+- **Abschnitt 4, Hosting:** Der Hosting-Anbieter ist ein `[PLATZHALTER]`. Tatsächlich läuft die Seite auf **Cloudflare** (Workers).
+- Weitere Platzhalter (Verantwortlicher, Anschrift, Telefon, Stand) gibt es in Datenschutz und Impressum. Das ist schon bekannt.
+- Empfehlung: Vor dem nächsten Produktiv-Deploy (oder sofort, weil es den Live-Stand betrifft) die Abschnitte 4 und 6 von dir bzw. anwaltlich anpassen lassen.
 
 ## Prüfungen
 
