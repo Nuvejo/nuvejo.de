@@ -164,23 +164,6 @@
         </div>
       </div>
 
-      <!-- DEMO_MODE: Das Formular wird nicht ausgeliefert. Das Original steht unveraendert
-           im <template id="live-form"> darunter (inert: nicht sichtbar, nicht absendbar,
-           main.js findet es nicht). Zum Reaktivieren siehe report-port-2026-10-30.md. -->
-      <div class="form form--demo rv" id="demo-form-notice">
-        <h2 class="h-3">Projektanfrage</h2>
-        <p class="notice" style="margin-top: 1rem">
-          <strong>Hinweis:</strong> Dies ist eine Demo-Version. Das Unternehmen
-          ist in Deutschland noch nicht live, es werden keine Anfragen
-          bearbeitet. Über diese Seite lässt sich deshalb nichts absenden, und
-          es werden keine Daten erhoben.
-        </p>
-        <p class="tiny faint" style="margin-top: 1rem">
-          <a href="/" style="color:var(--sky-hi);text-decoration:underline">Zurück zur Startseite</a>
-        </p>
-      </div>
-
-      <template id="live-form">
       <!-- FORM -->
       <form class="form rv" id="anfrage" name="kontakt">
         <!-- Everything the visitor fills in and submits. main.js sends this
@@ -260,7 +243,6 @@
 
         <p class="form__status" id="form-status" role="status" aria-live="polite" hidden></p>
       </form>
-      </template>
 
     </div>
   </section>

@@ -4,13 +4,6 @@
 // ever sees requests for that path — every other request (every page, every
 // asset) is still served directly from the asset store exactly as it was
 // before this script existed. Nothing here can change that behavior.
-// DEMO_MODE: nuvejo.de ist derzeit nur eine Demo/Vorbereitung (Unternehmen in
-// Deutschland noch nicht live). Solange true, lehnt /api/contact jede Anfrage
-// mit 410 ab, ohne den Body zu lesen und ohne Brevo anzusprechen. Der komplette
-// Versandcode darunter bleibt unveraendert. Zum Reaktivieren auf false setzen
-// (und kontakt.html wieder auf das Formular umstellen, siehe Report).
-const DEMO_MODE = true;
-
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
@@ -112,9 +105,6 @@ async function turnstileOk(token, ip, secret) {
 }
 
 async function handleContact(request, env) {
-  if (DEMO_MODE) {
-    return json({ error: "Demo-Version: Anfragen werden nicht bearbeitet." }, 410);
-  }
   try {
     const ip = request.headers.get("CF-Connecting-IP") || "unknown";
 

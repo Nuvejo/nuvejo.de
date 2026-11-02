@@ -157,41 +157,40 @@ Lokal mit `wrangler dev` (echter Worker inkl. `_headers`), Playwright mit lokale
 1. Monatsraten für die .de festlegen oder sagen, dass die Ratenzahlung auf der .de entfällt.
 2. Danach: TODO-Stellen füllen bzw. entfernen, Branch nach `main` mergen, pushen. Die Git-Integration deployt `main` wie bisher.
 
-## Nachtrag 2026-11-03 (2): Demo-Modus
+## Nachtrag 2026-11-03 (2): Demo-Hinweis (Formular bleibt aktiv)
 
-nuvejo.de ist nur Demo/Vorbereitung, das Unternehmen ist in Deutschland noch nicht live. Umgesetzt auf dem Branch `port-au-2026-10-30`, nur Preview, kein Merge, kein Produktiv-Deploy.
+nuvejo.de ist Demo/Vorbereitung, das Unternehmen ist in Deutschland noch nicht live. Gewollt war **nur der sichtbare Demo-Hinweis**. Ein erster Schritt (Commit `f8483d2`) ging weiter: Formular deaktiviert und Worker per `DEMO_MODE` auf 410 gestellt. **Das ist vollständig rückgängig gemacht.** Branch `port-au-2026-10-30`, nur Preview, kein Merge, kein Produktiv-Deploy.
 
-### Was geändert wurde
+### Aktueller Stand
 
-| Bereich | Änderung |
+| Bereich | Stand |
 |---|---|
-| Banner | Schmaler Streifen ganz oben auf **allen 9 Seiten** (8 + 404): „Demo-Version, noch nicht live.“ (`.demo-bar`, Navy/Gold). Er scrollt mit weg, das Menü bleibt sticky; der Mobil-Drawer liegt unverändert darüber |
-| Hero (Startseite) | Hinweis-Box zwischen Eyebrow und Hauptüberschrift: „Hinweis: Dies ist eine Demo-Version. Das Unternehmen ist in Deutschland noch nicht live, es werden keine Anfragen bearbeitet.“ (`.demo-note`). Platz bewusst über der Überschrift: Darunter lag sie auf 1280×800 unter dem sichtbaren Bereich, jetzt ist sie auf 390 und 1280 px ohne Scrollen zu sehen |
-| Kontaktseite | Formular wird nicht mehr ausgeliefert. Stattdessen steht dort der Demo-Hinweis (mit „keine Daten werden erhoben“). Das Original-Formular liegt **unverändert** in `<template id="live-form">` in `kontakt.html` (inert: nicht sichtbar, nicht absendbar, `main.js` findet es nicht, keine Konsolenfehler) |
-| Worker | `const DEMO_MODE = true;` am Anfang von `src/index.js`. Solange `true`, antwortet `POST /api/contact` mit **410** und `{"error":"Demo-Version: …"}`, ohne den Body zu lesen und ohne Brevo anzusprechen. Der gesamte Versandcode ist unverändert |
-| Suchmaschinen | `<meta name="robots" content="noindex, nofollow">` auf allen 9 Seiten (vorher teils `index, follow` / `noindex, follow`); `robots.txt`: `Disallow: /` |
-| Sitemap | Bewusst **nicht** entfernt (Vorgabe), siehe Checkliste |
+| Banner | Schmaler Streifen ganz oben auf allen 9 Seiten (8 + 404): „Demo-Version, noch nicht live.“ (`.demo-bar`). Bleibt |
+| Hero (Startseite) | Hinweis-Box zwischen Eyebrow und Hauptüberschrift: „Hinweis: Dies ist eine Demo-Version. Das Unternehmen ist in Deutschland noch nicht live.“ (`.demo-note`). Der Halbsatz „es werden keine Anfragen bearbeitet“ ist entfernt, weil das Formular wieder geht |
+| Kontaktformular | Wieder das Original (Partnerschaft-Auswahl, Honeypot, Turnstile-Platzhalter ohne Key, sichtbare Fehlermeldungen). Demo-Block und `<template>`-Wrapper sind entfernt. Gegen den Stand vor dem Demo-Modus (`4691734`) geprüft: `kontakt.html` ist bis auf Banner und robots-Meta identisch |
+| Worker `src/index.js` | `DEMO_MODE` und die 410-Logik sind **komplett entfernt**. Die Datei ist identisch mit dem Stand vor dem Demo-Modus (`4691734`): Spam-Schutz, Honeypot, Rate-Limit, optionales Turnstile, Brevo-Versand unverändert |
+| noindex / robots.txt | **Unverändert aktiv**: `noindex, nofollow` auf allen 9 Seiten, `robots.txt` mit `Disallow: /`. **Wartet auf Marcos Entscheidung**, ob die Seite für Suchmaschinen gesperrt bleiben soll |
+| Sitemap | Nicht angefasst; vor dem echten Start prüfen |
 
-Hinweis zu den Suchmaschinen: `Disallow: /` verhindert das Crawlen, dann kann Google das `noindex` auf den Seiten nicht mehr lesen. Für eine neue Seite ist das unkritisch. Sollte die .de bereits im Index stehen, kann der Eintrag als reine URL ohne Beschreibung noch eine Weile sichtbar bleiben. Dann hilft ein Antrag auf Entfernung in der Google Search Console.
+Hinweis zu den Suchmaschinen: `Disallow: /` verhindert das Crawlen, dann kann Google das `noindex` auf den Seiten nicht lesen. Für eine neue Seite ist das unkritisch. Steht die .de schon im Index, kann der Eintrag als reine URL noch eine Weile sichtbar bleiben (dann Entfernungsantrag in der Search Console). Die `robots.txt` auf nuvejo.de enthält zusätzlich Zeilen, die nicht aus dem Repo stammen (vermutlich eine Cloudflare-Einstellung, nicht geprüft); nach einem echten Deploy die Datei ansehen.
 
-### Reaktivieren: Start-Checkliste (alles zurückdrehen)
+### Start-Checkliste (was für den echten Start zurückzudrehen ist)
 
-1. **Worker:** `src/index.js`, `const DEMO_MODE = true;` → `false`.
-2. **Kontaktformular:** in `kontakt.html` den Block `<div class="form form--demo" id="demo-form-notice">…</div>` löschen und die beiden Zeilen `<template id="live-form">` und `</template>` entfernen (Inhalt dazwischen, das Formular, bleibt stehen).
-3. **Banner und Hero-Hinweis:** `<div class="demo-bar" …>` (direkt nach `<body>`) auf allen 9 Seiten und `<p class="demo-note …>` in `index.html` entfernen. Die CSS-Regeln `.demo-bar` / `.demo-note` am Ende von `assets/css/styles.css` können danach weg.
-4. **noindex:** in allen 9 Seiten `noindex, nofollow` zurück auf `index, follow` (Impressum, Datenschutz und 404 vorher: `noindex, follow` bzw. `noindex`, das war der Stand vor dem Demo-Modus; 404 bleibt sinnvollerweise `noindex`).
-5. **robots.txt:** `Disallow: /` → `Allow: /` (Sitemap-Zeile bleibt).
-6. **Sitemap:** `sitemap.xml` prüfen (URLs, `lastmod`), dann bei Google Search Console einreichen.
-7. **Datenschutz/Impressum:** Platzhalter füllen und Abschnitte 4 (Hosting) und 6 (Kontaktformular/Brevo) korrigieren, siehe Nachtrag oben. **Vor dem Reaktivieren des Formulars zwingend**, weil sonst personenbezogene Daten verarbeitet werden, die die Erklärung nicht nennt.
-8. Mit Test-Anfrage prüfen, dass die Mail ankommt (Brevo-Key und Absender sind am Worker unverändert).
+Die `DEMO_MODE`-Schritte entfallen, es gibt keinen Worker-Schalter mehr.
 
-### Prüfungen
+1. **Banner und Hero-Hinweis entfernen:** `<div class="demo-bar" …>` (direkt nach `<body>`) auf allen 9 Seiten und `<p class="demo-note …>` in `index.html`. Danach die CSS-Regeln `.demo-bar` / `.demo-note` am Ende von `assets/css/styles.css` löschen.
+2. **noindex** (nach Marcos Entscheidung): in allen 9 Seiten `noindex, nofollow` zurück auf den Stand davor: `index, follow` für die 6 Inhaltsseiten, `noindex, follow` für Impressum und Datenschutz, `noindex` für die 404.
+3. **robots.txt:** `Disallow: /` → `Allow: /` (Sitemap-Zeile bleibt).
+4. **Sitemap:** `sitemap.xml` prüfen (URLs, `lastmod`) und bei der Search Console einreichen.
+5. **Datenschutz/Impressum:** Platzhalter füllen, Abschnitte 4 (Hosting) und 6 (Kontaktformular/Brevo) korrigieren. Das Formular ist aktiv und sendet Daten über Brevo, die Erklärung beschreibt das bisher falsch.
+6. Test-Anfrage senden und prüfen, dass die Mail ankommt.
 
-Lokal (`wrangler dev`) und auf der Preview, jeweils 390×844 und 1280×800:
+### Prüfungen (nach dem Rückbau)
 
-- Banner auf allen 9 Seiten sichtbar, kein horizontales Scrollen, keine kaputten Bilder/Links, Menü öffnet sich auf 390 px vollständig und wird vom Banner nicht verdeckt.
-- Hero-Hinweis vollständig im ersten Bildschirm; lesbar (Gold/Grau auf dunklem Navy).
-- Kontaktseite: 0 `<form>`, 0 Eingabefelder, Demo-Hinweis sichtbar, 0 POST-Requests, keine Konsolenfehler.
-- API: gültige Anfrage, Honeypot-Anfrage und Müll-Body antworten alle mit **410**; es wird nichts an Brevo gesendet (auf der Preview mit echtem Key getestet, weil 410 vor jedem Brevo-Aufruf greift).
-- `robots.txt` liefert `Disallow: /`; alle 9 Seiten tragen `noindex, nofollow`.
-- Build: `wrangler versions upload` fehlerfrei.
+- Lokal (`wrangler dev`): Formular wird angezeigt; Vorauswahl `?paket=Website-Partnerschaft Wachstum` ✓; leeres Absenden zeigt 4 markierte Felder + Hinweis ✓; Turnstile lädt nicht (kein Key) ✓. API: Honeypot 200 ohne Versand, fehlende Felder 400, ungültige Mail 400, kein JSON 400. Es wurden nur Pfade getestet, die keine Mail auslösen.
+- 390×844 und 1280×800, alle 9 Seiten: kein horizontales Scrollen, keine kaputten Bilder/Links, keine Konsolenfehler, Menü auf 390 px vollständig bedienbar.
+- Preview-Ergebnisse: siehe Abschnitt „Preview“ unten.
+
+### Mergebereit?
+
+**Nein.** Offen sind (1) die EUR-Monatsraten der 12-Monats-Ratenzahlung (TODO in `leistungen.html`), (2) Marcos Entscheidung zu noindex/robots, (3) die Datenschutzerklärung, die zum aktiven Formular nicht passt, und (4) die fehlschlagenden Cloudflare-Branch-Builds (Logs nicht lesbar). Ein Merge nach `main` würde den Banner und die Sperre für Suchmaschinen live schalten und die TODO-Platzhalter sichtbar machen.
