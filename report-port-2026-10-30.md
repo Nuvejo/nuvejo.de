@@ -194,3 +194,11 @@ Die `DEMO_MODE`-Schritte entfallen, es gibt keinen Worker-Schalter mehr.
 ### Mergebereit?
 
 **Nein.** Offen sind (1) die EUR-Monatsraten der 12-Monats-Ratenzahlung (TODO in `leistungen.html`), (2) Marcos Entscheidung zu noindex/robots, (3) die Datenschutzerklärung, die zum aktiven Formular nicht passt, und (4) die fehlschlagenden Cloudflare-Branch-Builds (Logs nicht lesbar). Ein Merge nach `main` würde den Banner und die Sperre für Suchmaschinen live schalten und die TODO-Platzhalter sichtbar machen.
+
+### Preview (nach dem Rückbau)
+
+- Commit `4eb1b3f`, Preview-Version `a4edb57b-45c7-4ddc-8ce2-86fe6c944f7c` (Nicht-Produktiv-Version): https://port-au-2026-10-30-nuvejodeu.ma-andriani92.workers.dev
+- Formular wird angezeigt (1 Formular, 8 Felder), Demo-Block weg; Vorauswahl ✓, Fehleranzeige bei leerem Absenden (4 Felder) ✓; 0 POST-Requests, keine Konsolenfehler, kein horizontales Scrollen (390 und 1280 px).
+- API auf der Preview, nur Pfade ohne Mail: Honeypot → 200 (nichts gesendet), fehlende Felder → 400, ungültige Mail → 400, Müll-Body → 400. Eine gültige Anfrage wurde bewusst **nicht** abgeschickt, weil dort der echte Brevo-Key aktiv ist.
+- Hero-Hinweis mit neuem Wortlaut sichtbar, Banner vorhanden, `robots.txt` = `Disallow: /` (wie gewünscht unverändert).
+- Produktion (nuvejo.de) unverändert: kein Banner.
