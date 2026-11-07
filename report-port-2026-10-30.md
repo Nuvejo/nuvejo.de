@@ -202,3 +202,13 @@ Die `DEMO_MODE`-Schritte entfallen, es gibt keinen Worker-Schalter mehr.
 - API auf der Preview, nur Pfade ohne Mail: Honeypot → 200 (nichts gesendet), fehlende Felder → 400, ungültige Mail → 400, Müll-Body → 400. Eine gültige Anfrage wurde bewusst **nicht** abgeschickt, weil dort der echte Brevo-Key aktiv ist.
 - Hero-Hinweis mit neuem Wortlaut sichtbar, Banner vorhanden, `robots.txt` = `Disallow: /` (wie gewünscht unverändert).
 - Produktion (nuvejo.de) unverändert: kein Banner.
+
+## Nachtrag 2026-11-07: Nur der Demo-Hinweis ist live
+
+Auf Marcos Wunsch („nur der Hinweis“) ist **nur der Demo-Hinweis** auf nuvejo.de (Produktion) online, nicht der Port.
+
+- Commit `a8055d0` direkt auf `main` (von `f82b4b8`, Fast-Forward), Cloudflare-Build erfolgreich, ca. 70 s bis live.
+- Inhalt (34 Zeilen, nichts gelöscht): Banner „Demo-Version, noch nicht live.“ auf den 8 Seiten, Hinweis-Box im Hero der Startseite („Hinweis: Dies ist eine Demo-Version. Das Unternehmen ist in Deutschland noch nicht live.“), CSS `.demo-bar` / `.demo-note`.
+- **Nicht** enthalten und unverändert: robots-Meta (`index, follow` bleibt), `robots.txt`, Kontaktformular, Worker, Preisseite, 404, `_headers`, Texte. Das Formular antwortet live wie vorher (Honeypot-Pfad geprüft, keine Mail).
+- Live geprüft (390 und 1280 px, 8 Seiten): Banner überall, Hero-Hinweis auf der Startseite, kein horizontales Scrollen, Menü auf 390 px bedienbar, keine Konsolenfehler.
+- Der Branch `port-au-2026-10-30` ist weiterhin **nicht gemergt** und enthält den gesamten Port (inkl. noindex, 404, neue Preisseite mit TODOs). Vor einem späteren Merge zuerst `main` in den Branch holen: Banner und Hero-Hinweis stehen in beiden und führen zu kleinen Konflikten in denselben Zeilen (jeweils die Branch-Version behalten, dort steht zusätzlich `noindex`).
