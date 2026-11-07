@@ -40,3 +40,8 @@ Siehe Ende dieser Datei (nach dem Deploy ergänzt).
 - Hero: Die angeheftete Grafik lässt bei sehr hohen Bildschirmen unter dem Text eine lange leere Strecke. Das ist das Scroll-Konzept (Grafik bleibt stehen, Text scrollt vorbei) und war schon so; nicht umgebaut.
 - „So arbeite ich“ und die Zeilen lassen bei 2560+ rechts Platz. Text ist zur Lesbarkeit begrenzt; ein Füllen bräuchte ein neues Layout.
 - Die Vorschau ist wie der Port-Stand `noindex` und enthält weiter die offenen TODOs (12-Monats-Rate). Dieser Branch ist nur die Layout-Änderung, kein Freigabestand.
+
+## Vorschau (deployt 2026-11-07, nur Branch-Preview)
+https://fluid-layout-2026-11-07-nuvejodeu.ma-andriani92.workers.dev (per `wrangler versions upload --preview-alias`; Produktion `nuvejo.de` unberührt).
+Geprüft auf der Vorschau bei 390, 1440 und 2560 Breite (index, leistungen, 404): kein horizontales Scrollen, keine Konsolenfehler, Root 16 / 16 / 22 px, Container 390 / 1296 / 2200 px.
+Kontaktbogen: https://fluid-layout-2026-11-07-nuvejodeu.ma-andriani92.workers.dev/fluid-contact-sheet.png
