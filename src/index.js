@@ -71,7 +71,7 @@ async function handleContact(request, env) {
         // verified in Brevo. Swap this for a nuvejo.de address once one is
         // verified there too (Senders, Domains & Dedicated IPs -> Senders).
         sender: { name: "Nuvejo Kontaktformular", email: "ma.andriani92@gmail.com" },
-        to: [{ email: "ma.andriani92@gmail.com", name: "Marco" }],
+        to: [{ email: "marco@nuvejo.de", name: "Marco" }],
         replyTo: { email: email, name: name },
         subject: `Neue Anfrage von ${name}`,
         htmlContent: htmlContent,
